@@ -4,11 +4,29 @@ let toDoInput = {
 let toDoList = [];
 
 const form = document.querySelector(".form");
+
+const tasks = document.querySelector(".task-lists");
+
+const itemsFast = document.querySelector(".items-fast-list");
+const itemsSlow = document.querySelector(".items-slow-list")
+
 const list = document.querySelector(".list");
 const item = document.querySelector(".item");
 const items = document.querySelectorAll(".item");
 const reset = document.querySelector(".reset");
 const counter = document.querySelector(".counter");
+
+new Sortable(itemsFast, {
+  group: 'shared', // set both lists to same group
+  animation: 450
+});
+
+new Sortable(itemsSlow, {
+  group: 'shared',
+  animation: 450
+});
+
+
 
 const localStoreKey = "My-to-do-input";
 const localStoreKeys = "My-to-do-list";
@@ -25,12 +43,12 @@ if (savedDataList) {
     toDoList.forEach(taskObj => {
         createToDoItem(taskObj.task)
     });
-    updateNumbers();
+  updateNumbers();
 };
 
 form.addEventListener("input", handleInput)
 form.addEventListener("submit", handleSubmit);
-list.addEventListener("click", handleDelete);
+tasks.addEventListener("click", handleDelete);
 list.addEventListener("change", handleCheckBox);
 
 function handleInput(ev) {
@@ -73,7 +91,6 @@ function handleSubmit(event) {
             icon: "error",
             title: "Oops...",
             text: "Цей task вже існує",
-            footer: '<a href="#">Why do I have this issue?</a>'
           });
     };
 
@@ -81,7 +98,7 @@ function handleSubmit(event) {
     Swal.fire({
         position: "top-end",
         icon: "success",
-        title: "Your work has been saved",
+        title: "Твій task збережено, бро!",
         showConfirmButton: false,
         timer: 1500
     });
@@ -125,18 +142,18 @@ function handleDelete(event) {
             buttonsStyling: false
           });
           swalWithBootstrapButtons.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
+            title: "Ти впевнений?",
+            text: "Цей task буде видалено зі списку!",
             icon: "warning",
             showCancelButton: true,
-            confirmButtonText: "Yes, delete it!",
-            cancelButtonText: "No, cancel!",
+            confirmButtonText: "Так, видалити!",
+            cancelButtonText: "Ні, залишити!",
             reverseButtons: true
           }).then((result) => {
             if (result.isConfirmed) {
               swalWithBootstrapButtons.fire({
-                title: "Deleted!",
-                text: "Your file has been deleted.",
+                title: "Видалено!",
+                text: "Твій task було видалено.",
                 icon: "success"
               });
               const item = event.target.closest(".item");
@@ -148,12 +165,11 @@ function handleDelete(event) {
               localStorage.setItem(localStoreKeys, JSON.stringify(toDoList));
               updateNumbers();
             } else if (
-              /* Read more about handling dismissals below */
               result.dismiss === Swal.DismissReason.cancel
             ) {
               swalWithBootstrapButtons.fire({
-                title: "Cancelled",
-                text: "Your imaginary file is safe :)",
+                title: "Відміна",
+                text: "Твій task в безпеці :)",
                 icon: "error"
               });
             }
@@ -162,12 +178,12 @@ function handleDelete(event) {
 };
 
 function updateNumbers() {
-    const items = list.querySelectorAll(".item");
+    const items = tasks.querySelectorAll(".item");
     items.forEach((item, index) => {
         const text = item.querySelector(".text");
         text.textContent = `${index + 1}. ${text.textContent.replace(/^\d+\.\s*/, '')}`;
     });
-    const totalItems = list.querySelectorAll(".item").length;
+    const totalItems = tasks.querySelectorAll(".item").length;
     counter.textContent = `Залишилось до виконання ${totalItems} завдань`;
 };
 
