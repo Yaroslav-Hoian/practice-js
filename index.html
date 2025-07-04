@@ -21,6 +21,7 @@
 </head>
 <body>
     <div class="container">
+        <button class="btn theme-toggle">🌙 Темна / ☀️ Світла</button>
         <h1 class="title">Твій список справ</h1>
         <form class="form">
             <label for="input"></label>
@@ -28,6 +29,7 @@
                 id="input"
                 type="text"
                 name="input"
+                autocomplete="off"
                 placeholder="Що потрібно зделач, братік?">
             <button class="btn" type="submit">Зберегти</button>
         </form>
@@ -35,10 +37,14 @@
         <ul class="task-lists" >
             <li class="items items-fast" data-aos="fade-up" data-aos-easing="linear" data-aos-duration="2000">
                 <h2 class="subtitle">КРОВ З НОСА</h2>
+                <hr>
                 <ul class="task-items-list items-fast-list" ></ul>
+            </li>
+            <li class="wall">
             </li>
             <li class="items item-slow" data-aos="fade-up" data-aos-easing="linear" data-aos-duration="2000">
                 <h2 class="subtitle">ПОЧЕКАЄ ТРОХА</h2>
+                <hr>
                 <ul class="list task-items-list  items-slow-list"></ul>
             </li>
         </ul>

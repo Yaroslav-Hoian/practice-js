@@ -3,6 +3,8 @@ let toDoInput = {
 };
 let toDoList = [];
 
+let completedTasksCount = 0;
+
 const form = document.querySelector(".form");
 
 const tasks = document.querySelector(".task-lists");
@@ -17,7 +19,7 @@ const reset = document.querySelector(".reset");
 const counter = document.querySelector(".counter");
 
 new Sortable(itemsFast, {
-  group: 'shared', // set both lists to same group
+  group: 'shared',
   animation: 450
 });
 
@@ -30,6 +32,7 @@ new Sortable(itemsSlow, {
 
 const localStoreKey = "My-to-do-input";
 const localStoreKeys = "My-to-do-list";
+const localStorageSuccess = "succees";
 
 const savedDataInput = localStorage.getItem(localStoreKey);
 if (savedDataInput) {
@@ -45,6 +48,11 @@ if (savedDataList) {
     });
   updateNumbers();
 };
+
+const savedDataSuccess = localStorage.getItem(localStorageSuccess);
+if (savedDataSuccess) {
+  completedTasksCount = JSON.parse(savedDataSuccess);
+}
 
 form.addEventListener("input", handleInput)
 form.addEventListener("submit", handleSubmit);
@@ -158,7 +166,10 @@ function handleDelete(event) {
               });
               const item = event.target.closest(".item");
               const taskText = item.querySelector(".text").textContent.replace(/^\d+\.\s*/, '').trim();
-      
+              completedTasksCount += 1;
+              localStorage.setItem(localStorageSuccess, completedTasksCount);
+              checkAchievements();
+              
               item.remove();
       
               toDoList = toDoList.filter(task => task.task !== taskText);
@@ -193,3 +204,33 @@ function handleCheckBox(event) {
         item.classList.toggle("done", event.target.checked);
     };
 };
+
+const toggleThemeBtn = document.querySelector('.theme-toggle');
+toggleThemeBtn.addEventListener('click', () => {
+  document.body.classList.toggle('dark-theme');
+  const theme = document.body.classList.contains('dark-theme') ? 'dark' : 'light';
+  localStorage.setItem('theme', theme);
+});
+
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme === 'dark') {
+  document.body.classList.add('dark-theme');
+}
+
+
+function checkAchievements() {
+  if (completedTasksCount === 5) {
+    Swal.fire({
+      title: '🔥 Молодець!',
+      text: 'Виконав 5 завдань!',
+      icon: 'success'
+    });
+  } 
+  if (completedTasksCount === 10) {
+    Swal.fire({
+      title: '🏆 Легенда!',
+      text: '10 завдань! Ти машина!',
+      icon: 'success'
+    });
+  }
+}
